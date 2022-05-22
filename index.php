@@ -2,8 +2,11 @@
 
 require 'include.php';
 
-$path = '/home/simon/Downloads/PXL_20220519_080308928.jpg';
+$path = '/home/simon/Downloads/cd.png';
 
 $url = sendToImgur($path);
 
-printf('<img src="%s">', $url);
+$submission = createSubmission(1, 1, $url);
+
+?>
+<img src="<?php echo htmlspecialchars($url) ?>" height="300">

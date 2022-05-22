@@ -1,8 +1,11 @@
 <?php
 
 define('CLIENT_ID', '22edce8d6cb7321');
+define('DB_NAME', 'through_the_keyhole');
+define('DB_USERNAME', 'root');
+define('DB_PASSWORD', 'root');
 
-function sendToImgur($path): string
+function sendToImgur(string $path): string
 {
     $image_source = file_get_contents($path);
     $ch = curl_init();
@@ -20,4 +23,31 @@ function sendToImgur($path): string
     }
 
     return $res->data->link;
+}
+
+function createSubmission(int $user_id, int $theme_id, string $url)
+{
+    runQuery(
+        'insert into submission (user_id, theme_id, url, created_at) values (?, ?, ?, ?)',
+        [$user_id, $theme_id, $url, time()]
+    );
+}
+
+function runQuery(string $query, array $params = []): PDOStatement
+{
+    $db = getDb();
+    $query = $db->prepare($query);
+    $query->execute($params);
+
+    return $query;
+}
+
+function getDb()
+{
+    return new Pdo(
+        'mysql:dbname=' . DB_NAME,
+        DB_USERNAME,
+        DB_PASSWORD,
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ]
+    );
 }
