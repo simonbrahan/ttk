@@ -3,7 +3,7 @@
 define('CLIENT_ID', '22edce8d6cb7321');
 define('DB_NAME', 'through_the_keyhole');
 define('DB_USERNAME', 'root');
-define('DB_PASSWORD', 'root');
+define('DB_PASSWORD', null);
 
 function sendToImgur(string $path): string
 {
@@ -33,6 +33,29 @@ function createSubmission(int $user_id, int $theme_id, string $url)
     );
 }
 
+function createTheme(int $user_id, string $theme_name)
+{
+    runQuery(
+        'insert into theme (user_id, name, created_at) values (?, ?, ?)',
+        [$user_id, $theme_name, time()]
+    );
+}
+
+function getAllUsers()
+{
+    return runQuery('select id, name from user order by name');
+}
+
+function getAllThemes()
+{
+    return runQuery(
+        'select t.id, t.name, t.created_at, u.name as creator
+         from theme t
+         join user u on t.user_id = u.id
+         order by t.created_at'
+    );
+}
+
 function runQuery(string $query, array $params = []): PDOStatement
 {
     $db = getDb();
@@ -50,4 +73,9 @@ function getDb()
         DB_PASSWORD,
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ]
     );
+}
+
+function e(string $content)
+{
+    echo htmlspecialchars($content);
 }

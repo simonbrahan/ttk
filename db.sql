@@ -1,5 +1,6 @@
 create table user (
     id int not null auto_increment,
+    name varchar(255),
     email varchar(255),
 
     primary key (id),
@@ -8,6 +9,7 @@ create table user (
 
 create table theme (
     id int not null auto_increment,
+    user_id int not null,
     name varchar(255),
     created_at int not null,
 
