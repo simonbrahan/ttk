@@ -33,6 +33,11 @@ function createSubmission(int $user_id, int $theme_id, string $url)
     );
 }
 
+function deleteSubmission(int $user_id, int $theme_id)
+{
+    runQuery('delete from submission where user_id = ? and theme_id = ?', [$user_id, $theme_id]);
+}
+
 function getSubmissionsForUser(int $user_id)
 {
     $res = runQuery(

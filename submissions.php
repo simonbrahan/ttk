@@ -7,7 +7,11 @@ $me = getAuthedUser();
 if (isset($_POST['new_submission'])) {
     $url = sendToImgur($_FILES['picture']['tmp_name']);
 
-    createSubmission(1, $_POST['theme'], $url);
+    createSubmission($me->id, $_POST['theme'], $url);
+}
+
+if (isset($_POST['delete_submission'])) {
+    deleteSubmission($me->id, $_POST['theme']);
 }
 
 $my_submissions = getSubmissionsForUser($me->id);
@@ -20,7 +24,6 @@ $my_unsubmitted_themes = getUnsubmittedThemesForUser($me->id);
         <title>My Submissions - Through The Keyhole</title>
     </head>
     <body>
-        <pre><?php var_dump($my_unsubmitted_themes) ?></pre>
         <h1>New Submission</h1>
         <?php if (empty($my_unsubmitted_themes)) : ?>
             <p>There are no themes left for you to submit</p>
@@ -47,6 +50,15 @@ $my_unsubmitted_themes = getUnsubmittedThemesForUser($me->id);
                     <p>Submission for theme: <em><?php e($submission->theme->name) ?></em></p>
                     <img src="<?php e($submission->url) ?>">
                 </li>
+                <form method="post">
+                    <input
+                        type="submit"
+                        name="delete_submission"
+                        value="Delete Submission"
+                        onClick="return confirm('Are you sure you want to delete this submission?')"
+                    >
+                    <input type="hidden" name="theme" value="<?php e($submission->theme->id) ?>">
+                </form>
             <?php endforeach ?>
             </ul>
         <?php endif ?>
