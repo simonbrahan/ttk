@@ -75,7 +75,7 @@ function getUser(int $user_id)
         throw new Exception('No user with id ' . $user_id);
     }
 
-    return $res->fetch();
+    return reset($res);
 }
 
 function getAllThemes()
@@ -101,13 +101,13 @@ function getUnsubmittedThemesForUser(int $user_id)
     );
 }
 
-function runQuery(string $query, array $params = []): PDOStatement
+function runQuery(string $query, array $params = []): array
 {
     $db = getDb();
     $query = $db->prepare($query);
     $query->execute($params);
 
-    return $query;
+    return $query->fetchAll();
 }
 
 function getDb()
