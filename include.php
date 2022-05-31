@@ -33,6 +33,27 @@ function createSubmission(int $user_id, int $theme_id, string $url)
     );
 }
 
+function getSubmissionsForUser(int $user_id)
+{
+    $res = runQuery(
+        'select s.url, t.id as theme_id, t.name as theme_name, s.created_at as submission_created
+         from submission s
+         join theme t on s.theme_id = t.id
+         order by s.created_at desc'
+    );
+
+    $out = [];
+    foreach ($res as $row) {
+        $out[] = (object) [
+            'url' => $row->url,
+            'theme' => (object) ['id' => $row->theme_id, 'name' => $row->theme_name],
+            'created_at' => $row->submission_created
+        ];
+    }
+
+    return $out;
+}
+
 function createTheme(int $user_id, string $theme_name)
 {
     runQuery(
@@ -46,6 +67,17 @@ function getAllUsers()
     return runQuery('select id, name from user order by name');
 }
 
+function getUser(int $user_id)
+{
+    $res = runQuery('select id, name from user where id = ?', [$user_id]);
+
+    if (empty($res)) {
+        throw new Exception('No user with id ' . $user_id);
+    }
+
+    return $res->fetch();
+}
+
 function getAllThemes()
 {
     return runQuery(
@@ -53,6 +85,19 @@ function getAllThemes()
          from theme t
          join user u on t.user_id = u.id
          order by t.created_at'
+    );
+}
+
+function getUnsubmittedThemesForUser(int $user_id)
+{
+    return runQuery(
+        'select t.id, t.name, t.created_at, u.name as creator
+         from theme t
+         join user u on t.user_id = u.id
+         left join submission s on s.user_id = ? and s.theme_id = t.id
+         where s.theme_id is null
+         order by t.created_at',
+        [$user_id]
     );
 }
 
@@ -73,6 +118,11 @@ function getDb()
         DB_PASSWORD,
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ]
     );
+}
+
+function getAuthedUser()
+{
+    return getUser(1);
 }
 
 function e(string $content)
