@@ -26,12 +26,11 @@
             }
 
             .user-choice {
-                display: block;
-                float: left;
                 background-color: orange;
                 border-radius: 3px;
                 margin: 3px;
                 padding: 3px;
+                line-height: 1.5em;
                 cursor: move;
             }
 
@@ -41,14 +40,17 @@
                 justify-content: space-around;
             }
 
-            .image-box img {
+            .image-box {
                 position: relative;
-                width: 450px;
                 margin-bottom: 15px;
             }
 
+            .image-box img {
+                width: 450px;
+            }
+
             .image-box .user-choice {
-                position: relative;
+                position: absolute;
                 top: 3px;
                 left: 3px;
             }
