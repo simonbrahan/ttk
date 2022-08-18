@@ -44,7 +44,7 @@ create table guess (
 
     primary key (id),
 
-    unique (guesser_id, submission_id)
+    unique (guesser_id, submission_id),
 
     foreign key (guesser_id) references user (id),
     foreign key (guessed_id) references user (id),

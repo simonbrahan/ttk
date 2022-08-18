@@ -3,7 +3,7 @@
 define('CLIENT_ID', '22edce8d6cb7321');
 define('DB_NAME', 'through_the_keyhole');
 define('DB_USERNAME', 'root');
-define('DB_PASSWORD', null);
+define('DB_PASSWORD', 'root');
 
 function sendToImgur(string $path): string
 {
