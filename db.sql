@@ -4,6 +4,7 @@ create table user (
     email varchar(255),
 
     primary key (id),
+
     unique (email),
     unique (name)
 );
@@ -15,6 +16,7 @@ create table theme (
     created_at int not null,
 
     primary key (id),
+
     unique (name)
 );
 
@@ -26,7 +28,11 @@ create table submission (
     created_at int not null,
 
     primary key (id),
-    unique (user_id, theme_id)
+
+    unique (user_id, theme_id),
+
+    foreign key (user_id) references user (id),
+    foreign key (theme_id) references theme (id)
 );
 
 create table guess (
@@ -37,5 +43,12 @@ create table guess (
     created_at int not null,
 
     primary key (id),
+
     unique (guesser_id, submission_id)
+
+    foreign key (guesser_id) references user (id),
+    foreign key (guessed_id) references user (id),
+    foreign key (submission_id) references submission (id),
+
+    check (guesser_id <> guessed_id)
 );
